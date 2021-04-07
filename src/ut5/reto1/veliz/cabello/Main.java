@@ -16,6 +16,8 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println("Viva españa");
+        System.out.println("Viva el rey");
+        System.out.println("EL ORDEN Y LA LEY");
     }
     
 }
