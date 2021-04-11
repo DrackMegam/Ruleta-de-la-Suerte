@@ -61,25 +61,38 @@ public class RuletaDeLaSuerte {
         }
         
         // Creo los objetos del jugador.
-        // Aquellos jugadores que "no participen" tendrán null por nombre.
-        List<Jugador> jugadores = new ArrayList<Jugador>();
+        List<Jugador> jugadores = new ArrayList<>();
         for(int i =0;i<numeroJugadores;i++){
+            // Uso la cola donde antes he guardado los nombres.
             Jugador jugador = new Jugador(nombresJugadores.poll(),2000,0);
             jugadores.add(jugador);
         }
         
-       
-
-        System.out.println(jugadores.get(0).getNombreJugador());
-        System.out.println(jugadores.get(1).getNombreJugador());
+//        // MOSTRAR TODOS LOS NOMBRES.
+//        System.out.println();
+//        System.out.println("Repasemos los nombres: ");
+//        for(int i =0;i<numeroJugadores;i++){
+//            System.out.println("Jugador nº"+(i+1)+": "+jugadores.get(i).getNombreJugador());
+//        }
+        
+        
         
         // Aquí comienza el juego.
         
-        // TODO elegir qué jugador comienza.
+        // Turno del jugador que empieza, y para ver como avanzan los turnos..
+        int turnoJugador=(int) (Math.random()*numeroJugadores);
+        
+        System.out.println("Le toca al jugador...");
+        System.out.println("¡"+jugadores.get(turnoJugador).getNombreJugador()+"!");
         
         // TODO elegir paneles y crear dichos objetos.
         
         // TODO empezar turno de jugador y funcionalidad del juego.
+        boolean juegoVivo=true;
+        do{
+            // Invoco el texto personalizado.
+            Texto.comenzarTurno(jugadores.get(turnoJugador));
+        }while(juegoVivo);
         
             // TODO tirar de la ruleta y decir consonante.
             
@@ -101,5 +114,11 @@ public class RuletaDeLaSuerte {
             // TODO Resolver el panel y cagar los demáses boteses.
             
             // TODO Comprar una vocal, comprobando bote y demáses.
+    }
+    
+    public static int avanzarTurno(int turnoActual,int turnoMaximo){
+        int turno=0;
+        
+        return turno;
     }
 }
