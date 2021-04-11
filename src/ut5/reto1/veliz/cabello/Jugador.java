@@ -11,14 +11,28 @@ package ut5.reto1.veliz.cabello;
  */
 public class Jugador {
 
+    /**
+     * El nombre del jugador funciona de la siguiente manera:.
+     * No solo funciona como identificador del nombre del jugador.
+     * Si no que, si es nulo (si el jugador no existe)
+     * entonces este jugador no se tendrá en cuenta en la partida.
+     */
     private String nombreJugador;
+    private final static String NOMBRE_PREDETERMINADO="jugador"; 
     private int dinero;
+    private final static int DINERO_PREDETERMINADO=2000; 
     private int bote;
+    private final static int BOTE_PREDETERMINADO=0; 
 
     public Jugador(String nombreJugador, int dinero, int bote) {
         this.nombreJugador = nombreJugador;
         this.dinero = dinero;
         this.bote = bote;
+    }
+    public Jugador(){
+        this.nombreJugador=NOMBRE_PREDETERMINADO;
+        this.dinero=DINERO_PREDETERMINADO;
+        this.bote=BOTE_PREDETERMINADO;
     }
 
     public String getNombreJugador() {
