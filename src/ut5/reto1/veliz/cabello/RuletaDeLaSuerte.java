@@ -98,7 +98,7 @@ public class RuletaDeLaSuerte {
             accionJugador = Integer.parseInt(respuestaUsuario);
             switch (accionJugador) {
                 case 1:
-                    System.out.println("AAAA");
+                    Texto.tirarRuleta(jugadores.get(turnoJugador));
                     // TODO tirar de la ruleta y decir consonante.
                     /**
                      * Probabilidades de la ruleta. 0 - 7.5 --> Quiebra 7.6 - 15
@@ -111,13 +111,16 @@ public class RuletaDeLaSuerte {
                     tirarRuleta(jugadores.get(turnoJugador), usu);
                     break;
                 case 2:
-                    System.out.println("BBBB");
+                    Texto.resolverPanel(jugadores.get(turnoJugador));
                     // TODO Resolver el panel y cagar los demáses boteses.
                     // Aquí hay que meter partes del ahorcado.
                     resolverPanel(jugadores.get(turnoJugador), usu);
                     break;
                 case 3:
-                    System.out.println("CCCC");
+                    // TODO Antes de comprar una vocal, hay que ver si
+                    // aún quedan vocales o si tiene más de 50 pavos.
+                    // en un IF, claro está
+                    Texto.comenzarTurno(jugadores.get(turnoJugador));
                     // TODO Comprar una vocal, comprobando bote y demáses.
                     comprarVocal(jugadores.get(turnoJugador), usu);
                     break;
