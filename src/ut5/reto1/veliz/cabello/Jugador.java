@@ -14,7 +14,7 @@ public class Jugador {
     private String nombreJugador;
     private final static String NOMBRE_PREDETERMINADO="jugador"; 
     private int dinero;
-    private final static int DINERO_PREDETERMINADO=2000; 
+    private final static int DINERO_PREDETERMINADO=0; 
     private int bote;
     private final static int BOTE_PREDETERMINADO=0; 
 
