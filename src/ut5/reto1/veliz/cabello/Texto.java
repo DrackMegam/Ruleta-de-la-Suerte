@@ -11,8 +11,11 @@ package ut5.reto1.veliz.cabello;
  */
 public class Texto {
 
-    public static void comenzarTurno(Jugador jugador){
+        public static void comenzarTurno(Jugador jugador){
         System.out.println("¡Es el turno de "+jugador.getNombreJugador()+"!");
+    }
+    
+    public static void opcionesTurno(){
         System.out.println("1) Tirar de la ruleta");
         System.out.println("2) Resolver el panel");
         System.out.println("3) Comprar vocal (50€)");
