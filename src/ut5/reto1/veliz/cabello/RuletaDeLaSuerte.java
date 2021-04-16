@@ -19,13 +19,24 @@ import java.util.concurrent.LinkedTransferQueue;
  */
 public class RuletaDeLaSuerte {
 
+    // Variables para controlar el curso del juego.
+    static boolean juegoVivo = true;
+    static boolean turnoJugadorVivo = true;
+
     public static void main(String[] args) {
         Scanner usu = new Scanner(System.in);
         String respuestaUsuario;
         int numeroJugadores = 0;
         // Para verificar el nº de jugadores y la acción del turno de estos.
         boolean verificarAccion;
-        Set<Character> vocalRepetida= new TreeSet<Character>();
+        // Paneles
+        String[] paneles = new String[6];
+        String[] pistas = new String[6];
+        buildPaneles(paneles);
+        buildPustas(pistas);
+        int panelAleatorio = (int) (Math.random() * 6);
+        Set<Character> vocalRepetida = new TreeSet<Character>();
+        Set<Character> consonanteRepetida = new TreeSet<Character>();
 
         // Inicio del juego.
         System.out.println("BIENVENIDA");
@@ -81,56 +92,64 @@ public class RuletaDeLaSuerte {
 
         // TODO elegir paneles y crear dichos objetos.
         // TODO empezar turno de jugador y funcionalidad del juego.
-        boolean juegoVivo = true;
         respuestaUsuario = null;
         int accionJugador;
-        do {
-            verificarAccion = false;
-            // Invoco el texto personalizado.
-            Texto.comenzarTurno(jugadores.get(turnoJugador));
-            do {
-                System.out.printf("||> ");
-                respuestaUsuario = usu.nextLine();
-                // Verifico que haya escrito una opción correcta.
-                if (respuestaUsuario.equals("1") || respuestaUsuario.equals("2") || respuestaUsuario.equals("3")) {
-                    verificarAccion = true;
-                }
-            } while (!verificarAccion);
+        boolean primeraAccion = true;
+        do { // Bucle de Juego
+            primeraAccion=true;
+            do { // Bucle de Turno
+                turnoJugadorVivo = true;
+                verificarAccion = false;
+                // Invoco el texto personalizado.
+                Texto.comenzarTurno(jugadores.get(turnoJugador));
 
-            // Registro la acción y la ejecuto.
-            accionJugador = Integer.parseInt(respuestaUsuario);
-            switch (accionJugador) {
-                case 1:
+                // Le obligo a tirar de la ruleta.
+                // Pero solo si es la 1º acción de su turno.
+                if (primeraAccion) {
                     Texto.tirarRuleta(jugadores.get(turnoJugador));
-                    // TODO tirar de la ruleta y decir consonante.
-                    /**
-                     * Probabilidades de la ruleta. 0 - 7.5 --> Quiebra 7.6 - 15
-                     * --> Perder el turno 15.1 - 25 --> 0€ 25.1 - 50 --> 25€
-                     * 50.1 - 65 --> 50€ 65.1 - 75 --> 75€ 75.1 - 80 --> 100€
-                     * 80.1 - 83.75 --> 150€ 83.76 - 87.5 --> 200 87.6 - 95 -->
-                     * Vuelve a tirar 95.1 - 100 --> Vocal gratis, vuelve a
-                     * tirar.
-                     */
-                    tirarRuleta(jugadores.get(turnoJugador), usu);
-                    turnoJugador = avanzarTurno(turnoJugador, numeroJugadores - 1);
+                    tirarRuleta(jugadores.get(turnoJugador), usu, vocalRepetida,consonanteRepetida);
+                }
+                primeraAccion=false;
 
-                    break;
-                case 2:
-                    Texto.resolverPanel(jugadores.get(turnoJugador));
-                    // TODO Resolver el panel y cagar los demáses boteses.
-                    // Aquí hay que meter partes del ahorcado.
-                    resolverPanel(jugadores.get(turnoJugador), usu);
-                    break;
-                case 3:
-                    // TODO Antes de comprar una vocal, hay que ver si
-                    // aún quedan vocales o si tiene más de 50 pavos.
-                    // en un IF, claro está
-                    Texto.comenzarTurno(jugadores.get(turnoJugador));
-                    // TODO Comprar una vocal, comprobando bote y demáses.
-                    comprarVocal(jugadores.get(turnoJugador), usu,vocalRepetida);
-                    break;
-            }
+                // Si no ha perdido el turno en la ruleta...
+                if (turnoJugadorVivo) {
+                    Texto.opcionesTurno();
+                    do {
+                        System.out.printf("||> ");
+                        respuestaUsuario = usu.nextLine();
+                        // Verifico que haya escrito una opción correcta.
+                        if (respuestaUsuario.equals("1") || respuestaUsuario.equals("2") || respuestaUsuario.equals("3")) {
+                            verificarAccion = true;
+                        }
+                    } while (!verificarAccion);
 
+                    // Registro la acción y la ejecuto.
+                    accionJugador = Integer.parseInt(respuestaUsuario);
+                    switch (accionJugador) {
+                        case 1:
+                            Texto.tirarRuleta(jugadores.get(turnoJugador));
+                            tirarRuleta(jugadores.get(turnoJugador), usu, vocalRepetida,consonanteRepetida);
+                            break;
+                        case 2:
+                            Texto.resolverPanel(jugadores.get(turnoJugador));
+                            // TODO Resolver el panel y cagar los demáses boteses.
+                            // Aquí hay que meter partes del ahorcado.
+                            resolverPanel(jugadores.get(turnoJugador), usu);
+                            // Acaba el turno.
+                            turnoJugadorVivo = false;
+                            break;
+                        case 3:
+                            // TODO Antes de comprar una vocal, hay que ver si
+                            // aún quedan vocales o si tiene más de 50 pavos.
+                            // en un IF, claro está
+                            Texto.comenzarTurno(jugadores.get(turnoJugador));
+                            // TODO Comprar una vocal, comprobando bote y demáses.
+                            comprarVocal(jugadores.get(turnoJugador), usu, vocalRepetida);
+                            break;
+                    }
+                }
+
+            } while (turnoJugadorVivo);
             turnoJugador = avanzarTurno(turnoJugador, numeroJugadores - 1);
         } while (juegoVivo);
     }
@@ -177,7 +196,7 @@ public class RuletaDeLaSuerte {
      * @param jugador Jugador del turno actual.
      * @param scanner Scanner para pulsar "enter" y tirar.
      */
-    private static void tirarRuleta(Jugador jugador, Scanner scanner) {
+    private static void tirarRuleta(Jugador jugador, Scanner scanner,Set<Character> vocalRepetida, Set<Character> consonanteRepetida) {
         /**
          * Probabilidades de la ruleta. 0 - 7.5 --> Quiebra 7.6 - 15 --> Perder
          * el turno 15.1 - 25 --> 0€ 25.1 - 50 --> 25€ 50.1 - 65 --> 50€ 65.1 -
@@ -186,48 +205,72 @@ public class RuletaDeLaSuerte {
          * a tirar.
          */
         double opcionRuleta = Math.random() * 100;
+        // Para tirar de la ruleta.
+        String tirarRuletita = scanner.nextLine();
 
         if (opcionRuleta >= 0 && opcionRuleta <= 7.5) {
             System.out.println("Has caido en quiebra");
             jugador.setBote(0);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            turnoJugadorVivo = false;
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 7.6 && opcionRuleta <= 15) {
             System.out.println("Pierdes el turno");
-
+            turnoJugadorVivo = false;
         } else if (opcionRuleta >= 15.1 && opcionRuleta <= 25) {
-            System.out.println("0€");
+            System.out.println("+0€");
+            decirConsonante(jugador, scanner, consonanteRepetida);
         } else if (opcionRuleta >= 25.1 && opcionRuleta <= 50) {
-            System.out.println("25€");
-            jugador.setBote(jugador.getBote() + 25);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            System.out.println("+25€");
+           
+            decirConsonante(jugador, scanner, consonanteRepetida);
+            //Si el turno no esta vivo es porque ha repetido consonante/quiebra/pierde el turno
+            if(turnoJugadorVivo){
+               jugador.setBote(jugador.getBote() + 25); 
+            }
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 50.1 && opcionRuleta <= 65) {
-            System.out.println("50€");
-            jugador.setBote(jugador.getBote() + 50);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            System.out.println("+50€");
+            decirConsonante(jugador, scanner, consonanteRepetida);
+            if(turnoJugadorVivo){
+               jugador.setBote(jugador.getBote() + 50); 
+            }
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 65.1 && opcionRuleta <= 75) {
-            System.out.println("75€");
-            jugador.setBote(jugador.getBote() + 75);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            System.out.println("+75€");
+            decirConsonante(jugador, scanner, consonanteRepetida);
+            if(turnoJugadorVivo){
+               jugador.setBote(jugador.getBote() + 75); 
+            }
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 75.1 && opcionRuleta <= 80) {
-            System.out.println("100€");
-            jugador.setBote(jugador.getBote() + 100);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            System.out.println("+100€");
+            decirConsonante(jugador, scanner, consonanteRepetida);
+            if(turnoJugadorVivo){
+               jugador.setBote(jugador.getBote() + 100); 
+            }
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 80.1 && opcionRuleta <= 83.75) {
-            System.out.println("150€");
-            jugador.setBote(jugador.getBote() + 150);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            System.out.println("+150€");
+            decirConsonante(jugador, scanner, consonanteRepetida);
+            if(turnoJugadorVivo){
+               jugador.setBote(jugador.getBote() + 150); 
+            }
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 83.76 && opcionRuleta <= 87.5) {
-            System.out.println("200€");
-            jugador.setBote(jugador.getBote() + 200);
-            System.out.println("Actualmente el bote es de: " + jugador.getBote());
+            System.out.println("+200€");
+            decirConsonante(jugador, scanner, consonanteRepetida);
+            if(turnoJugadorVivo){
+               jugador.setBote(jugador.getBote() + 200); 
+            }
+            System.out.println("Bote: " + jugador.getBote());
         } else if (opcionRuleta >= 87.6 && opcionRuleta <= 95) {
             System.out.println("Vuelves a tirar");
-
         } else if (opcionRuleta >= 95.1 && opcionRuleta <= 100) {
             System.out.println("Vocal Gratis");
-
+            // Le doy 50€ para simular que es "gratis".
+            jugador.setBote(jugador.getBote() + 50);
+            comprarVocal(jugador, scanner, vocalRepetida);
         }
-
     }
 
     /**
@@ -247,28 +290,64 @@ public class RuletaDeLaSuerte {
      * @param jugador Jugador del turno actual.
      * @param scanner Scanner para pulsar "enter" y tirar.
      */
-    private static void comprarVocal(Jugador jugador, Scanner scanner,Set<Character> vocalRepetida) {
-       if(jugador.getBote()>=50){
-        System.out.println("Dime la vocal que quieres comprar");
-        Character vocal = scanner.next().charAt(0);
-        if (vocal == 'a' || vocal == 'e' || vocal == 'i' || vocal == 'o' || vocal == 'u'
-                || vocal == 'A' || vocal == 'E'
-                || vocal == 'I' || vocal == 'O'
-                || vocal == 'U') {
-            if(vocalRepetida.contains(vocal)){
-                System.out.println("Esta repetida");
-            }else{
-                vocalRepetida.add(vocal);
-                jugador.setBote(jugador.getBote()-50);
+    private static void comprarVocal(Jugador jugador, Scanner scanner, Set<Character> vocalRepetida) {
+        if (jugador.getBote() >= 50) {
+            System.out.println("Dime la vocal que quieres comprar");
+            Character vocal = scanner.next().charAt(0);
+            if (vocal == 'a' || vocal == 'e' || vocal == 'i' || vocal == 'o' || vocal == 'u'
+                    || vocal == 'A' || vocal == 'E'
+                    || vocal == 'I' || vocal == 'O'
+                    || vocal == 'U') {
+                if (vocalRepetida.contains(vocal)) {
+                    System.out.println("Esta repetida");
+                } else {
+                    vocalRepetida.add(vocal);
+                    jugador.setBote(jugador.getBote() - 50);
+                }
+
+            } else {
+                System.out.println("No has dicho una vocal");
             }
-
         } else {
-            System.out.println("No has dicho una vocal");
+            System.out.println("No tienes dinero");
         }
-    }else{
-           System.out.println("No tienes dinero");
-       }
     }
-    
 
-}
+    private static void buildPaneles(String[] paneles) {
+        paneles[0] = "Yo solo se que no se nada";
+        paneles[1] = "Cristiano Ronaldo";
+        paneles[2] = "La generacion del veintisiete";
+        paneles[3] = "Tortilla de patatas";
+        paneles[4] = "La teoria del todo";
+        paneles[5] = "Un ciudadano ejemplar";
+    }
+
+    private static void buildPustas(String[] pistas) {
+        pistas[0] = "Socrates";
+        pistas[1] = "Ex-Jugador del Real Madrid";
+        pistas[2] = "Conjunto de escritores";
+        pistas[3] = "Comida tipica";
+        pistas[4] = "Stephen Hawking";
+        pistas[5] = "Pelicula";
+    }
+    public static void decirConsonante(Jugador jugador, Scanner scanner,Set<Character> consonanteRepetida){     
+            System.out.println("Dime la consonante");
+            Character consonante = scanner.nextLine().charAt(0);
+            if (consonante != 'a' || consonante != 'e' || consonante != 'i' || consonante != 'o' || consonante != 'u'
+                    || consonante != 'A' || consonante != 'E'
+                    || consonante != 'I' || consonante != 'O'
+                    || consonante != 'U') {
+                if (consonanteRepetida.contains(consonante)) {
+                    System.out.println("Esta repetida");
+                    turnoJugadorVivo=false;
+                } else {
+                    consonanteRepetida.add(consonante);
+                    
+                }
+            }else{
+                System.out.println("No has dicho una consonante");
+            }
+        } 
+    
+    }
+
