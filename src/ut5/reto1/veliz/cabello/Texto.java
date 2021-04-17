@@ -74,4 +74,14 @@ public class Texto {
         System.out.println("¡Has resuelto el panel!");
         System.out.println();
     }
+    
+    public static void presentacion(){
+        System.out.println("¡Bienvenido a la Ruleta de la Suerte!");
+        System.out.println();
+        System.out.println("Imagino que todos sabréis jugar.");
+        System.out.println("Así que vayammos directos al concurso.");
+        System.out.println();
+        System.out.println("Antes de jugar, veamos como será la partida.");
+        System.out.println();
+    }
 }
