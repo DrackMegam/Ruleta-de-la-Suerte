@@ -169,8 +169,6 @@ public class RuletaDeLaSuerte {
                     Texto.tirarRuleta(jugadores.get(turnoJugador));
                     tirarRuleta(jugadores.get(turnoJugador), usu,
                             vocalRepetida, consonanteRepetida);
-                    Texto.mostrarPista(pistasElegidos.peek());
-                    Texto.mostrarPanel(panelSolucion);
                 }
                 primeraAccion = false;
 
