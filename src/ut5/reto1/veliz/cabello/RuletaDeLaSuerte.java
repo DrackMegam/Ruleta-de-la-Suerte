@@ -213,7 +213,11 @@ public class RuletaDeLaSuerte {
                                 } else {
                                     // Vacio el panel y meto el siguiente..
                                     panelSolucion.clear();
+                                    // Y reseteo las letras.
+                                    consonanteRepetida.clear();
+                                    vocalRepetida.clear();
                                     crearPanel();
+                                    
                                 }
                             }
                             break;
@@ -291,7 +295,10 @@ public class RuletaDeLaSuerte {
          * a tirar.
          */
         double opcionRuleta = Math.random() * 100;
-
+        
+        // Simular que tiro de la ruleta.
+        String tirarRuleta = scanner.nextLine();
+        
         if (opcionRuleta >= 0 && opcionRuleta <= 7.5) {
             System.out.println("Has caido en quiebra...");
             jugador.setBote(0);
